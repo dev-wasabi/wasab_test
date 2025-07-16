@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useMarketStatsList } from "./utils/fetcher";
 import { MarketStatsList, PerpSide } from "./utils/types";
 import { Popup } from "./components/general/Popup";
-import { MarketSelection } from "./components/market/MarketSelection";
+import { MarketSelectionList } from "./components/market/MarketSelectionList";
 import { PerpForm } from "./components/market/PerpForm";
-import { ArrowPathIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
 import { ButtonWithLoader } from "./components/general/ButtonWithLoader";
 import { Card } from "./components/general/Card";
 
@@ -14,7 +12,6 @@ const App: React.FC = () => {
   const [selectedMarket, setSelectedMarket] = useState<MarketStatsList | null>(
     null
   );
-
   const {
     data: marketStatsListResponse,
     isLoading: isMarketStatsListLoading,
@@ -52,19 +49,20 @@ const App: React.FC = () => {
               >
                 Select Market
               </ButtonWithLoader>
-              <h2 className="block text-xl flex-1">
-                {marketStatsListError ? (
-                  <span className="text-red-500">
-                    Error loading markets: {marketStatsListError.message}
-                  </span>
-                ) : selectedMarket ? (
-                  `Selected Market: ${selectedMarket.market.pair.baseToken.symbol}/${selectedMarket.market.pair.quoteToken.symbol}`
-                ) : isMarketStatsListLoading ? (
-                  "Loading markets..."
-                ) : (
-                  "Please select a market."
-                )}
-              </h2>
+
+              {marketStatsListError ? (
+                <span className="text-red-500">
+                  Error loading markets: {marketStatsListError.message}
+                </span>
+              ) : (
+                <h2 className="block text-xl flex-1">
+                  {selectedMarket
+                    ? `Selected Market: ${selectedMarket.market.pair.baseToken.symbol}/${selectedMarket.market.pair.quoteToken.symbol}`
+                    : isMarketStatsListLoading
+                    ? "Loading markets..."
+                    : "Please select a market."}
+                </h2>
+              )}
             </div>
           </Card>
           {selectedMarket && <PerpForm market={selectedMarket.market} />}
@@ -75,7 +73,7 @@ const App: React.FC = () => {
         isOpen={isMarketsPopupOpen}
         onClose={() => setIsMarketsPopupOpen(false)}
       >
-        <MarketSelection
+        <MarketSelectionList
           marketStatsList={marketStatsListResponse?.items ?? []}
           onSelected={(marketItem) => {
             setSelectedMarket(marketItem);
