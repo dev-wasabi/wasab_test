@@ -1,11 +1,13 @@
-import React, { PropsWithChildren } from "react";
+import React, { JSX, PropsWithChildren } from "react";
 
 export interface PopupProps {
+  popupTitle: string | JSX.Element;
   isOpen: boolean;
   onClose(): void;
 }
 
 export const Popup: React.FC<PropsWithChildren<PopupProps>> = ({
+  popupTitle,
   isOpen,
   onClose,
   children,
@@ -13,48 +15,13 @@ export const Popup: React.FC<PropsWithChildren<PopupProps>> = ({
   return (
     <>
       {isOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.3)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "20px",
-              borderRadius: "8px",
-              background: "white",
-              minWidth: "300px",
-              minHeight: "100px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 16,
-              }}
-            >
-              <h3 style={{ margin: 0 }}>Popup</h3>
+        <div className="fixed top-0 left-0 size-full bg-black/30 flex items-center justify-center z-50">
+          <div className="flex flex-col p-5 rounded-lg bg-white min-w-[300px] min-h-[100px]">
+            <div className="flex justify-between items-center mb-4">
+              <h3>{popupTitle}</h3>
               <button
                 onClick={onClose}
-                style={{
-                  fontSize: 18,
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                className="text-2xl bg-transparent border-none cursor-pointer pb-1"
               >
                 &times;
               </button>

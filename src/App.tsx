@@ -55,6 +55,7 @@ const App: React.FC = () => {
         {selectedMarket && <PerpForm market={selectedMarket} />}
       </div>
       <Popup
+        popupTitle="Select Market"
         isOpen={isMarketsPopupOpen}
         onClose={() => setIsMarketsPopupOpen(false)}
       >

@@ -12,8 +12,6 @@ export const MarketSelection: React.FC<MarketSelectionProps> = ({
 }) => {
   return (
     <div>
-      <h1>Market Selection</h1>
-      <p>Select a market to view details.</p>
       <ul>
         {marketStatsList.map((item) => {
           const { market } = item;
