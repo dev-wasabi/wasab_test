@@ -6,6 +6,7 @@ import { MarketSelection } from "./components/market/MarketSelection";
 import { PerpForm } from "./components/market/PerpForm";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { ButtonWithLoader } from "./components/general/ButtonWithLoader";
 
 const App: React.FC = () => {
   const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
@@ -42,18 +43,13 @@ const App: React.FC = () => {
         </header>
         <main className="p-4">
           <div className="flex flex-row items-center justify-start bg-white p-4 mb-2 rounded shadow gap-2">
-            <button
-              disabled={isMarketsPopupOpen || isMarketStatsListLoading}
+            <ButtonWithLoader
+              disabled={isMarketsPopupOpen}
+              isLoading={isMarketStatsListLoading}
               onClick={() => setIsMarketsPopupOpen(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded relative transition-colors duration-200 ease-in"
             >
-              {isMarketStatsListLoading && (
-                <ArrowPathIcon className="size-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin" />
-              )}
-              <span className={clsx(isMarketStatsListLoading && "invisible")}>
-                Select Market
-              </span>
-            </button>
+              Select Market
+            </ButtonWithLoader>
             <h2 className="block text-xl flex-1">
               {marketStatsListError ? (
                 <span className="text-red-500">

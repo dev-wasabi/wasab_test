@@ -4,6 +4,7 @@ import { useQuote } from "../../utils/fetcher";
 import { formatUnits, parseUnits } from "viem";
 import { Select } from "../general/Select";
 import clsx from "clsx";
+import { ButtonWithLoader } from "../general/ButtonWithLoader";
 
 interface PerpFormProps {
   market: Market;
@@ -127,24 +128,17 @@ export const PerpForm: React.FC<PerpFormProps> = ({ market }) => {
           className="w-full"
         />
       </div>
-      <button
+      <ButtonWithLoader
         type="submit"
-        className={clsx(
-          "px-4 py-2 rounded mt-2 transition-colors duration-200 ease-in border",
-          submitDisabled
-            ? "bg-white border-gray-400 text-gray-400"
-            : "bg-blue-500 border-blue-500 text-white"
-        )}
+        isLoading={isQuoteFetching}
         disabled={submitDisabled}
+        className="mt-2"
       >
-        {isQuoteFetching ? "Loading..." : "Submit"}
-      </button>
+        Submit
+      </ButtonWithLoader>
       {(quote?.errorMessage || !!quoteError) && (
         <div className="text-red-500 mt-2">
-          Error:{" "}
-          {quote?.errorMessage ||
-            (quoteError as Error)?.message ||
-            "Unknown error"}
+          Error: {quote?.errorMessage || quoteError?.message || "Unknown error"}
         </div>
       )}
     </form>
