@@ -6,12 +6,16 @@ import { Select } from "../general/Select";
 import clsx from "clsx";
 import { ButtonWithLoader } from "../general/ButtonWithLoader";
 import { Card } from "../general/Card";
+import { useAccount } from "wagmi";
+import { useConnectWalletPopup } from "../general/ConnectWalletPopup";
 
 interface PerpFormProps {
   market: Market;
 }
 
 export const PerpForm: React.FC<PerpFormProps> = ({ market }) => {
+  const account = useAccount();
+  const { open: openConnectPopup } = useConnectWalletPopup();
   const [formData, setFormData] = useState({
     side: "long" as PerpSide,
     downPayment: "",
@@ -132,14 +136,25 @@ export const PerpForm: React.FC<PerpFormProps> = ({ market }) => {
             className="w-full"
           />
         </div>
-        <ButtonWithLoader
-          type="submit"
-          isLoading={isQuoteFetching}
-          disabled={submitDisabled}
-          className="mt-2"
-        >
-          Submit
-        </ButtonWithLoader>
+        {account.isConnected ? (
+          <ButtonWithLoader
+            type="submit"
+            isLoading={isQuoteFetching}
+            disabled={submitDisabled}
+            className="mt-2"
+          >
+            Submit
+          </ButtonWithLoader>
+        ) : (
+          <ButtonWithLoader
+            type="button"
+            isLoading={false}
+            className="mt-2"
+            onClick={openConnectPopup}
+          >
+            Connect Wallet
+          </ButtonWithLoader>
+        )}
         {(quote?.errorMessage || !!quoteError) && (
           <div className="text-red-500 mt-2">
             Error:{" "}

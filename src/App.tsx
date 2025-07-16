@@ -6,8 +6,11 @@ import { MarketSelectionList } from "./components/market/MarketSelectionList";
 import { PerpForm } from "./components/market/PerpForm";
 import { ButtonWithLoader } from "./components/general/ButtonWithLoader";
 import { Card } from "./components/general/Card";
+import { useAccount, useDisconnect } from "wagmi";
 
 const App: React.FC = () => {
+  const account = useAccount();
+  const { disconnect } = useDisconnect();
   const {
     data: marketStatsListResponse,
     isLoading: isMarketStatsListLoading,
@@ -23,8 +26,11 @@ const App: React.FC = () => {
   return (
     <>
       <div className="min-h-screen bg-gray-100">
-        <header className="bg-blue-600 text-white p-4">
-          <h1 className="text-2xl">Market Dashboard</h1>
+        <header className="bg-blue-600 text-white p-4 flex">
+          <h1 className="text-2xl flex-1">Market Dashboard</h1>
+          {account.isConnected && (
+            <button onClick={() => disconnect()}>Disconnect</button>
+          )}
         </header>
         <main className="p-2 sm:p-4 w-full max-w-xl mx-auto">
           <Card>
