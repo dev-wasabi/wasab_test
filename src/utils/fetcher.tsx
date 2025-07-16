@@ -1,9 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBaseURL } from "./constants";
 import fetchData from "./fetchData";
 import {
   MarketStatsList,
+  OpenPositionRequest,
   PaginatedResponse,
+  PerpOrder,
+  PerpQuoteRequestV2,
   PerpQuoteResponseV2,
   PerpSide,
 } from "./types";
@@ -94,13 +97,36 @@ export const useQuote = ({
   });
 };
 
-// export const fetchOrderV2 = async (
-//   request: PerpQuoteRequestV2,
-//   chainId: number,
-// ): Promise<PerpOrder<OpenPositionRequest>> => {
-// return await postData(`${getBaseURL(chainId)}/api/v2/order/open`, {
-//   ...request,
-//   side: request.side.toUpperCase(),
-// });
-// send post request
-// };
+export const fetchOrderV2 = async (
+  request: PerpQuoteRequestV2,
+  chainId: number
+): Promise<PerpOrder<OpenPositionRequest>> => {
+  return await fetchData(`${getBaseURL(chainId)}/api/v2/order/open`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: stringifyWithBigInts({
+      ...request,
+      side: request.side.toUpperCase(),
+    }),
+  });
+};
+
+export function useOrder() {
+  return useMutation<
+    PerpOrder<OpenPositionRequest>,
+    Error,
+    { request: PerpQuoteRequestV2; chainId: number }
+  >({
+    mutationFn: ({ request, chainId }) => fetchOrderV2(request, chainId),
+  });
+}
+
+function stringifyWithBigInts(value: unknown, space?: string | number) {
+  return JSON.stringify(
+    value,
+    (_, value) => (typeof value === "bigint" ? value.toString() : value),
+    space
+  );
+}
