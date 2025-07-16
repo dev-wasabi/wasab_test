@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { MarketStatsList, PerpSide } from "../utils/types";
 import { useQuote } from "../utils/fetcher";
-import { parseEther, parseUnits } from "viem";
+import { parseUnits } from "viem";
 
 interface PerpFormProps {
   market: MarketStatsList;
@@ -15,7 +15,7 @@ export const PerpForm: React.FC<PerpFormProps> = ({
   const [formData, setFormData] = useState({
     downPayment: "",
     leverage: 1,
-    maxSlippage: 0.01,
+    maxSlippage: 1,
   });
 
   const { isFormValid, downPaymentAtoms } = useMemo(() => {
@@ -38,6 +38,10 @@ export const PerpForm: React.FC<PerpFormProps> = ({
 
   return (
     <form className="flex flex-col gap-4 p-4 bg-white rounded shadow">
+      <h2 className="text-xl mb-4">
+        {side === "long" ? "Open Long Position" : "Open Short Position"} on{" "}
+        {market.name}
+      </h2>
       <div>
         <label className="block mb-1 font-medium">
           Token {market.pair.quoteToken.symbol}:

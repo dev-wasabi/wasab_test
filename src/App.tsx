@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMarketStatsList } from "./utils/fetcher";
-import { Market, MarketStatsList } from "./utils/types";
+import { useMarketStatsList } from "./utils/fetcher";
+import { MarketStatsList } from "./utils/types";
 import { Popup } from "./components/Popup";
 import { MarketSelection } from "./components/MarketSelection";
 import { PerpForm } from "./components/PerpForm";
@@ -12,11 +11,22 @@ const App: React.FC = () => {
     null
   );
 
+  const { data: marketStatsListResponse } = useMarketStatsList();
+
   useEffect(() => {
-    if (!selectedMarket) {
+    if (selectedMarket || isMarketsPopupOpen || !marketStatsListResponse) {
+      return;
+    }
+
+    const selectedMarketFromUrl = extractMarketFromCurrentUrl(
+      marketStatsListResponse.items
+    );
+    if (selectedMarketFromUrl) {
+      setSelectedMarket(selectedMarketFromUrl);
+    } else {
       setIsMarketsPopupOpen(true);
     }
-  }, []);
+  }, [selectedMarket, marketStatsListResponse]);
 
   return (
     <>
@@ -49,8 +59,10 @@ const App: React.FC = () => {
         onClose={() => setIsMarketsPopupOpen(false)}
       >
         <MarketSelection
-          onSelected={(marketItem: MarketStatsList) => {
+          marketStatsList={marketStatsListResponse?.items ?? []}
+          onSelected={(marketItem) => {
             setSelectedMarket(marketItem);
+            updateCurrentUrlWithSelectedMarket(marketItem.market.id);
             setIsMarketsPopupOpen(false);
           }}
         />
@@ -60,3 +72,26 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+function extractMarketFromCurrentUrl(
+  markets: MarketStatsList[]
+): MarketStatsList | null {
+  const url = new URL(String(window.location));
+  const marketIdFromUrl = url.searchParams.get("market");
+  const selectedMarketId = marketIdFromUrl
+    ? Number.parseInt(marketIdFromUrl)
+    : null;
+
+  if (!selectedMarketId) {
+    return null;
+  }
+
+  return markets.find(({ market: { id } }) => id === selectedMarketId) ?? null;
+}
+
+function updateCurrentUrlWithSelectedMarket(marketId: number): void {
+  const url = new URL(String(window.location));
+  const searchParams = url.searchParams;
+  searchParams.set("market", String(marketId));
+  window.location.search = searchParams.toString();
+}

@@ -1,26 +1,25 @@
 import React from "react";
-import { useMarketStatsList } from "../utils/fetcher";
-import { Market, MarketStatsList } from "../utils/types";
+import { MarketStatsList } from "../utils/types";
 
 export interface MarketSelectionProps {
+  marketStatsList: MarketStatsList[];
   onSelected: (marketItem: MarketStatsList) => void;
 }
 
-export function MarketSelection({ onSelected }: MarketSelectionProps) {
-  const { data: res } = useMarketStatsList();
-
-  const marketStatsList = res?.items;
-
+export const MarketSelection: React.FC<MarketSelectionProps> = ({
+  marketStatsList,
+  onSelected,
+}) => {
   return (
     <div>
       <h1>Market Selection</h1>
       <p>Select a market to view details.</p>
       <ul>
-        {marketStatsList?.map((item) => {
+        {marketStatsList.map((item) => {
           const { market } = item;
 
           return (
-            <li>
+            <li key={market.id} className="mb-2">
               <button
                 onClick={() => onSelected(item)}
                 className="text-blue-500 hover:underline"
@@ -34,4 +33,4 @@ export function MarketSelection({ onSelected }: MarketSelectionProps) {
       </ul>
     </div>
   );
-}
+};
