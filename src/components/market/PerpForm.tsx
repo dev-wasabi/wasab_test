@@ -5,6 +5,7 @@ import { formatUnits, parseUnits } from "viem";
 import { Select } from "../general/Select";
 import clsx from "clsx";
 import { ButtonWithLoader } from "../general/ButtonWithLoader";
+import { Card } from "../general/Card";
 
 interface PerpFormProps {
   market: Market;
@@ -47,100 +48,105 @@ export const PerpForm: React.FC<PerpFormProps> = ({ market }) => {
     !isFormValid || !quote || !!quote.errorMessage || !!quoteError;
 
   return (
-    <form className="flex flex-col gap-4 p-4 mb-2 bg-white rounded shadow">
-      <h2 className="text-xl mb-4">
-        {formData.side === "long"
-          ? "Open Long Position"
-          : "Open Short Position"}
-      </h2>
-      <Select
-        value={formData.side}
-        options={[
-          { value: "long", label: "Long" },
-          { value: "short", label: "Short" },
-        ]}
-        onChange={(side) =>
-          setFormData({
-            ...formData,
-            side,
-          })
-        }
-        name="perp-side-select"
-        className="border rounded px-2 py-1 w-full"
-      />
-      <div className="flex flex-row gap-2 items-center">
-        <label
-          className="block font-medium order-2 w-15"
-          htmlFor="down-payment"
-        >
-          {market.pair.quoteToken.symbol}
-        </label>
-        <input
-          type="number"
-          id="down-payment"
-          placeholder="0"
-          value={formData.downPayment}
-          onChange={(e) => {
+    <Card
+      title={
+        formData.side === "long" ? "Open Long Position" : "Open Short Position"
+      }
+    >
+      <form className="flex flex-col gap-4">
+        <Select
+          value={formData.side}
+          options={[
+            { value: "long", label: "Long" },
+            { value: "short", label: "Short" },
+          ]}
+          onChange={(side) =>
             setFormData({
               ...formData,
-              downPayment: e.target.value,
-            });
-          }}
-          className="border rounded px-2 py-1 w-full order-1"
-        />
-      </div>
-      <div className="flex flex-row gap-2 items-center">
-        <label className="block font-medium order-2 w-15" htmlFor="out-amount">
-          {market.pair.baseToken.symbol}
-        </label>
-        <input
-          type="number"
-          id="out-amount"
-          placeholder="0"
-          disabled
-          value={outputSize}
-          onChange={(e) => {
-            setFormData({
-              ...formData,
-              downPayment: e.target.value,
-            });
-          }}
-          className="border border-gray-400 text-gray-400 rounded px-2 py-1 w-full order-1"
-        />
-      </div>
-      <div>
-        <label className="block mb-1 font-medium" htmlFor="leverage">
-          Leverage: {formData.leverage}x
-        </label>
-        <input
-          type="range"
-          id="leverage"
-          min={1.1}
-          max={market.maxLeverage}
-          step={0.1}
-          value={formData.leverage}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              leverage: Number(e.target.value),
+              side,
             })
           }
-          className="w-full"
+          name="perp-side-select"
+          className="border rounded px-2 py-1 w-full"
         />
-      </div>
-      <ButtonWithLoader
-        type="submit"
-        isLoading={isQuoteFetching}
-        disabled={submitDisabled}
-        className="mt-2"
-      >
-        Submit
-      </ButtonWithLoader>
-      {(quote?.errorMessage || !!quoteError) && (
-        <div className="text-red-500 mt-2">
-          Error: {quote?.errorMessage || quoteError?.message || "Unknown error"}
+        <div className="flex flex-row gap-2 items-center">
+          <label
+            className="block font-medium order-2 w-15"
+            htmlFor="down-payment"
+          >
+            {market.pair.quoteToken.symbol}
+          </label>
+          <input
+            type="number"
+            id="down-payment"
+            placeholder="0"
+            value={formData.downPayment}
+            onChange={(e) => {
+              setFormData({
+                ...formData,
+                downPayment: e.target.value,
+              });
+            }}
+            className="border rounded px-2 py-1 w-full order-1"
+          />
         </div>
-      )}
-    </form>
+        <div className="flex flex-row gap-2 items-center">
+          <label
+            className="block font-medium order-2 w-15"
+            htmlFor="out-amount"
+          >
+            {market.pair.baseToken.symbol}
+          </label>
+          <input
+            type="number"
+            id="out-amount"
+            placeholder="0"
+            disabled
+            value={outputSize}
+            onChange={(e) => {
+              setFormData({
+                ...formData,
+                downPayment: e.target.value,
+              });
+            }}
+            className="border border-gray-400 text-gray-400 rounded px-2 py-1 w-full order-1"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="leverage">
+            Leverage: {formData.leverage}x
+          </label>
+          <input
+            type="range"
+            id="leverage"
+            min={1.1}
+            max={market.maxLeverage}
+            step={0.1}
+            value={formData.leverage}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                leverage: Number(e.target.value),
+              })
+            }
+            className="w-full"
+          />
+        </div>
+        <ButtonWithLoader
+          type="submit"
+          isLoading={isQuoteFetching}
+          disabled={submitDisabled}
+          className="mt-2"
+        >
+          Submit
+        </ButtonWithLoader>
+        {(quote?.errorMessage || !!quoteError) && (
+          <div className="text-red-500 mt-2">
+            Error:{" "}
+            {quote?.errorMessage || quoteError?.message || "Unknown error"}
+          </div>
+        )}
+      </form>
+    </Card>
   );
 };

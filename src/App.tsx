@@ -7,6 +7,7 @@ import { PerpForm } from "./components/market/PerpForm";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { ButtonWithLoader } from "./components/general/ButtonWithLoader";
+import { Card } from "./components/general/Card";
 
 const App: React.FC = () => {
   const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
@@ -42,28 +43,30 @@ const App: React.FC = () => {
           <h1 className="text-2xl">Market Dashboard</h1>
         </header>
         <main className="p-4">
-          <div className="flex flex-row items-center justify-start bg-white p-4 mb-2 rounded shadow gap-2">
-            <ButtonWithLoader
-              disabled={isMarketsPopupOpen}
-              isLoading={isMarketStatsListLoading}
-              onClick={() => setIsMarketsPopupOpen(true)}
-            >
-              Select Market
-            </ButtonWithLoader>
-            <h2 className="block text-xl flex-1">
-              {marketStatsListError ? (
-                <span className="text-red-500">
-                  Error loading markets: {marketStatsListError.message}
-                </span>
-              ) : selectedMarket ? (
-                `Selected Market: ${selectedMarket.market.pair.baseToken.symbol}/${selectedMarket.market.pair.quoteToken.symbol}`
-              ) : isMarketStatsListLoading ? (
-                "Loading markets..."
-              ) : (
-                "Please select a market."
-              )}
-            </h2>
-          </div>
+          <Card>
+            <div className="flex flex-row items-center justify-start gap-2">
+              <ButtonWithLoader
+                disabled={isMarketsPopupOpen}
+                isLoading={isMarketStatsListLoading}
+                onClick={() => setIsMarketsPopupOpen(true)}
+              >
+                Select Market
+              </ButtonWithLoader>
+              <h2 className="block text-xl flex-1">
+                {marketStatsListError ? (
+                  <span className="text-red-500">
+                    Error loading markets: {marketStatsListError.message}
+                  </span>
+                ) : selectedMarket ? (
+                  `Selected Market: ${selectedMarket.market.pair.baseToken.symbol}/${selectedMarket.market.pair.quoteToken.symbol}`
+                ) : isMarketStatsListLoading ? (
+                  "Loading markets..."
+                ) : (
+                  "Please select a market."
+                )}
+              </h2>
+            </div>
+          </Card>
           {selectedMarket && <PerpForm market={selectedMarket.market} />}
         </main>
       </div>
