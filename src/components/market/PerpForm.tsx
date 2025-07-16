@@ -40,10 +40,10 @@ export const PerpForm: React.FC<PerpFormProps> = ({
     downPayment: downPaymentAtoms,
   });
 
-  const outputSize = useMemo(() => {
-    if (!quote || isQuoteFetching) return "0";
-    return formatUnits(quote.outputSize, market.pair.baseToken.decimals);
-  }, [quote, isQuoteFetching, market]);
+  const outputSize =
+    !quote || isQuoteFetching
+      ? "0"
+      : formatUnits(quote.outputSize, market.pair.baseToken.decimals);
   const submitDisabled =
     !isFormValid || !quote || !!quote.errorMessage || !!quoteError;
 
@@ -52,8 +52,7 @@ export const PerpForm: React.FC<PerpFormProps> = ({
       <h2 className="text-xl mb-4">
         {formData.side === "long"
           ? "Open Long Position"
-          : "Open Short Position"}{" "}
-        on {market.name}
+          : "Open Short Position"}
       </h2>
       <Select
         value={formData.side}
@@ -133,10 +132,10 @@ export const PerpForm: React.FC<PerpFormProps> = ({
       <button
         type="submit"
         className={clsx(
-          "px-4 py-2 rounded mt-2",
+          "px-4 py-2 rounded mt-2 transition-colors duration-200 ease-in border",
           submitDisabled
-            ? "bg-white border border-gray-400 text-gray-400"
-            : "bg-blue-500 text-white"
+            ? "bg-white border-gray-400 text-gray-400"
+            : "bg-blue-500 border-blue-500 text-white"
         )}
         disabled={submitDisabled}
       >
