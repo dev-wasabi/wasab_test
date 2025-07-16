@@ -4,6 +4,8 @@ import { MarketStatsList, PerpSide } from "./utils/types";
 import { Popup } from "./components/general/Popup";
 import { MarketSelection } from "./components/market/MarketSelection";
 import { PerpForm } from "./components/market/PerpForm";
+import { ArrowPathIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
 
 const App: React.FC = () => {
   const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
@@ -11,7 +13,11 @@ const App: React.FC = () => {
     null
   );
 
-  const { data: marketStatsListResponse } = useMarketStatsList();
+  const {
+    data: marketStatsListResponse,
+    isLoading: isMarketStatsListLoading,
+    error: marketStatsListError,
+  } = useMarketStatsList();
 
   useEffect(() => {
     if (selectedMarket || isMarketsPopupOpen || !marketStatsListResponse) {
@@ -35,24 +41,35 @@ const App: React.FC = () => {
           <h1 className="text-2xl">Market Dashboard</h1>
         </header>
         <main className="p-4">
-          {selectedMarket ? (
-            <div>
-              <h2 className="text-xl mb-4">
-                Selected Market: {selectedMarket.market.name}
-              </h2>
-              {/* Additional market details can be displayed here */}
-            </div>
-          ) : (
-            <p>Please select a market to view details.</p>
-          )}
-          <button
-            onClick={() => setIsMarketsPopupOpen(true)}
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Select Market
-          </button>
+          <div className="flex flex-row items-center justify-start bg-white p-4 mb-2 rounded shadow gap-2">
+            <button
+              disabled={isMarketsPopupOpen || isMarketStatsListLoading}
+              onClick={() => setIsMarketsPopupOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded relative transition-colors duration-200 ease-in"
+            >
+              {isMarketStatsListLoading && (
+                <ArrowPathIcon className="size-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin" />
+              )}
+              <span className={clsx(isMarketStatsListLoading && "invisible")}>
+                Select Market
+              </span>
+            </button>
+            <h2 className="block text-xl flex-1">
+              {marketStatsListError ? (
+                <span className="text-red-500">
+                  Error loading markets: {marketStatsListError.message}
+                </span>
+              ) : selectedMarket ? (
+                `Selected Market: ${selectedMarket.market.pair.baseToken.symbol}/${selectedMarket.market.pair.quoteToken.symbol}`
+              ) : isMarketStatsListLoading ? (
+                "Loading markets..."
+              ) : (
+                "Please select a market."
+              )}
+            </h2>
+          </div>
+          {selectedMarket && <PerpForm market={selectedMarket.market} />}
         </main>
-        {selectedMarket && <PerpForm market={selectedMarket} />}
       </div>
       <Popup
         popupTitle="Select Market"

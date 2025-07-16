@@ -22,7 +22,7 @@ export const MarketSelection: React.FC<MarketSelectionProps> = ({
                 onClick={() => onSelected(item)}
                 className="text-blue-500 hover:underline"
               >
-                {market.name} ({market.pair.baseToken.symbol}/{" "}
+                {market.name} ({market.pair.baseToken.symbol}/
                 {market.pair.quoteToken.symbol})
               </button>
             </li>

@@ -1,17 +1,15 @@
 import React, { useMemo, useState } from "react";
-import { MarketStatsList, PerpSide } from "../../utils/types";
+import { Market, PerpSide } from "../../utils/types";
 import { useQuote } from "../../utils/fetcher";
 import { formatUnits, parseUnits } from "viem";
 import { Select } from "../general/Select";
 import clsx from "clsx";
 
 interface PerpFormProps {
-  market: MarketStatsList;
+  market: Market;
 }
 
-export const PerpForm: React.FC<PerpFormProps> = ({
-  market: { market, tokenStats },
-}) => {
+export const PerpForm: React.FC<PerpFormProps> = ({ market }) => {
   const [formData, setFormData] = useState({
     side: "long" as PerpSide,
     downPayment: "",
@@ -48,7 +46,7 @@ export const PerpForm: React.FC<PerpFormProps> = ({
     !isFormValid || !quote || !!quote.errorMessage || !!quoteError;
 
   return (
-    <form className="flex flex-col gap-4 p-4 bg-white rounded shadow">
+    <form className="flex flex-col gap-4 p-4 mb-2 bg-white rounded shadow">
       <h2 className="text-xl mb-4">
         {formData.side === "long"
           ? "Open Long Position"
