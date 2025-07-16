@@ -1,5 +1,5 @@
 import React from "react";
-import { MarketStatsList } from "../utils/types";
+import { MarketStatsList } from "../../utils/types";
 
 export interface MarketSelectionProps {
   marketStatsList: MarketStatsList[];

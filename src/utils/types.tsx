@@ -13,6 +13,7 @@ export interface Market {
   feeBps: number;
   enabled: boolean;
   pair: PairTokens;
+  maxLeverage: number;
 }
 
 export interface PairTokens {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useMarketStatsList } from "./utils/fetcher";
-import { MarketStatsList } from "./utils/types";
-import { Popup } from "./components/Popup";
-import { MarketSelection } from "./components/MarketSelection";
-import { PerpForm } from "./components/PerpForm";
+import { MarketStatsList, PerpSide } from "./utils/types";
+import { Popup } from "./components/general/Popup";
+import { MarketSelection } from "./components/market/MarketSelection";
+import { PerpForm } from "./components/market/PerpForm";
 
 const App: React.FC = () => {
   const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
@@ -93,5 +93,6 @@ function updateCurrentUrlWithSelectedMarket(marketId: number): void {
   const url = new URL(String(window.location));
   const searchParams = url.searchParams;
   searchParams.set("market", String(marketId));
-  window.location.search = searchParams.toString();
+  url.search = searchParams.toString();
+  history.pushState({ marketId }, "", url);
 }

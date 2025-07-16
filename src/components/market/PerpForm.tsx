@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { MarketStatsList, PerpSide } from "../utils/types";
-import { useQuote } from "../utils/fetcher";
+import { MarketStatsList, PerpSide } from "../../utils/types";
+import { useQuote } from "../../utils/fetcher";
 import { parseUnits } from "viem";
 
 interface PerpFormProps {
@@ -66,7 +66,7 @@ export const PerpForm: React.FC<PerpFormProps> = ({
         <input
           type="range"
           min={1}
-          max={10}
+          max={market.maxLeverage}
           step={0.1}
           value={formData.leverage}
           onChange={(e) =>
