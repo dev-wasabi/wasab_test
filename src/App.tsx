@@ -52,7 +52,7 @@ const App: React.FC = () => {
             Select Market
           </button>
         </main>
-        {selectedMarket && <PerpForm market={selectedMarket} side="long" />}
+        {selectedMarket && <PerpForm market={selectedMarket} />}
       </div>
       <Popup
         isOpen={isMarketsPopupOpen}

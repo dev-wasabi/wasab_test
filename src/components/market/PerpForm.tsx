@@ -1,20 +1,21 @@
 import React, { useMemo, useState } from "react";
 import { MarketStatsList, PerpSide } from "../../utils/types";
 import { useQuote } from "../../utils/fetcher";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
+import { Select } from "../general/Select";
+import clsx from "clsx";
 
 interface PerpFormProps {
   market: MarketStatsList;
-  side: PerpSide;
 }
 
 export const PerpForm: React.FC<PerpFormProps> = ({
   market: { market, tokenStats },
-  side,
 }) => {
   const [formData, setFormData] = useState({
+    side: "long" as PerpSide,
     downPayment: "",
-    leverage: 1,
+    leverage: 1.1,
     maxSlippage: 1,
   });
 
@@ -27,27 +28,53 @@ export const PerpForm: React.FC<PerpFormProps> = ({
     return { isFormValid, downPaymentAtoms };
   }, [formData, market]);
 
-  const { data: quote } = useQuote({
+  const { data: quote, isFetching: isQuoteFetching } = useQuote({
     enabled: isFormValid,
     marketPairId: market.id,
     chainId: market.chainId,
-    side,
     ...formData,
     downPayment: downPaymentAtoms,
   });
 
+  const outputSize = useMemo(() => {
+    if (!quote || isQuoteFetching) return "0";
+    return formatUnits(quote.outputSize, market.pair.baseToken.decimals);
+  }, [quote, isQuoteFetching, market]);
+
   return (
     <form className="flex flex-col gap-4 p-4 bg-white rounded shadow">
       <h2 className="text-xl mb-4">
-        {side === "long" ? "Open Long Position" : "Open Short Position"} on{" "}
-        {market.name}
+        {formData.side === "long"
+          ? "Open Long Position"
+          : "Open Short Position"}{" "}
+        on {market.name}
       </h2>
-      <div>
-        <label className="block mb-1 font-medium">
-          Token {market.pair.quoteToken.symbol}:
+      <Select
+        value={formData.side}
+        options={[
+          { value: "long", label: "Long" },
+          { value: "short", label: "Short" },
+        ]}
+        onChange={(side) =>
+          setFormData({
+            ...formData,
+            side,
+          })
+        }
+        name="perp-side-select"
+        className="border rounded px-2 py-1 w-full"
+      />
+      <div className="flex flex-row gap-2 items-center">
+        <label
+          className="block font-medium order-2 w-15"
+          htmlFor="down-payment"
+        >
+          {market.pair.quoteToken.symbol}
         </label>
         <input
           type="number"
+          id="down-payment"
+          placeholder="0"
           value={formData.downPayment}
           onChange={(e) => {
             setFormData({
@@ -55,17 +82,36 @@ export const PerpForm: React.FC<PerpFormProps> = ({
               downPayment: e.target.value,
             });
           }}
-          className="border rounded px-2 py-1 w-full"
-          placeholder={`Amount in ${market.pair.quoteToken.symbol}`}
+          className="border rounded px-2 py-1 w-full order-1"
+        />
+      </div>
+      <div className="flex flex-row gap-2 items-center">
+        <label className="block font-medium order-2 w-15" htmlFor="out-amount">
+          {market.pair.baseToken.symbol}
+        </label>
+        <input
+          type="number"
+          id="out-amount"
+          placeholder="0"
+          disabled
+          value={outputSize}
+          onChange={(e) => {
+            setFormData({
+              ...formData,
+              downPayment: e.target.value,
+            });
+          }}
+          className="border border-gray-400 text-gray-400 rounded px-2 py-1 w-full order-1"
         />
       </div>
       <div>
-        <label className="block mb-1 font-medium">
+        <label className="block mb-1 font-medium" htmlFor="leverage">
           Leverage: {formData.leverage}x
         </label>
         <input
           type="range"
-          min={1}
+          id="leverage"
+          min={1.1}
           max={market.maxLeverage}
           step={0.1}
           value={formData.leverage}
@@ -78,10 +124,14 @@ export const PerpForm: React.FC<PerpFormProps> = ({
           className="w-full"
         />
       </div>
-
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+        className={clsx(
+          "px-4 py-2 rounded mt-2",
+          !isFormValid || !quote
+            ? "bg-white border border-gray-400 text-gray-400"
+            : "bg-blue-500 text-white"
+        )}
         disabled={!isFormValid || !quote}
       >
         Submit
