@@ -8,30 +8,17 @@ import { ButtonWithLoader } from "./components/general/ButtonWithLoader";
 import { Card } from "./components/general/Card";
 
 const App: React.FC = () => {
-  const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
-  const [selectedMarket, setSelectedMarket] = useState<MarketStatsList | null>(
-    null
-  );
   const {
     data: marketStatsListResponse,
     isLoading: isMarketStatsListLoading,
     error: marketStatsListError,
   } = useMarketStatsList();
-
-  useEffect(() => {
-    if (selectedMarket || isMarketsPopupOpen || !marketStatsListResponse) {
-      return;
-    }
-
-    const selectedMarketFromUrl = extractMarketFromCurrentUrl(
-      marketStatsListResponse.items
-    );
-    if (selectedMarketFromUrl) {
-      setSelectedMarket(selectedMarketFromUrl);
-    } else {
-      setIsMarketsPopupOpen(true);
-    }
-  }, [selectedMarket, marketStatsListResponse]);
+  const {
+    isMarketsPopupOpen,
+    setIsMarketsPopupOpen,
+    selectedMarket,
+    setSelectedMarket,
+  } = useMarketSelection(marketStatsListResponse?.items);
 
   return (
     <>
@@ -87,6 +74,33 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+function useMarketSelection(marketStatsList: MarketStatsList[] | undefined) {
+  const [isMarketsPopupOpen, setIsMarketsPopupOpen] = useState(false);
+  const [selectedMarket, setSelectedMarket] = useState<MarketStatsList | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (selectedMarket || isMarketsPopupOpen || !marketStatsList) {
+      return;
+    }
+
+    const selectedMarketFromUrl = extractMarketFromCurrentUrl(marketStatsList);
+    if (selectedMarketFromUrl) {
+      setSelectedMarket(selectedMarketFromUrl);
+    } else {
+      setIsMarketsPopupOpen(true);
+    }
+  }, [selectedMarket, marketStatsList, isMarketsPopupOpen]);
+
+  return {
+    isMarketsPopupOpen,
+    setIsMarketsPopupOpen,
+    selectedMarket,
+    setSelectedMarket,
+  };
+}
 
 function extractMarketFromCurrentUrl(
   markets: MarketStatsList[]
