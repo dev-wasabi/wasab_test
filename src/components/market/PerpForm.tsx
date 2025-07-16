@@ -28,7 +28,11 @@ export const PerpForm: React.FC<PerpFormProps> = ({
     return { isFormValid, downPaymentAtoms };
   }, [formData, market]);
 
-  const { data: quote, isFetching: isQuoteFetching } = useQuote({
+  const {
+    data: quote,
+    isFetching: isQuoteFetching,
+    error: quoteError,
+  } = useQuote({
     enabled: isFormValid,
     marketPairId: market.id,
     chainId: market.chainId,
@@ -40,6 +44,8 @@ export const PerpForm: React.FC<PerpFormProps> = ({
     if (!quote || isQuoteFetching) return "0";
     return formatUnits(quote.outputSize, market.pair.baseToken.decimals);
   }, [quote, isQuoteFetching, market]);
+  const submitDisabled =
+    !isFormValid || !quote || !!quote.errorMessage || !!quoteError;
 
   return (
     <form className="flex flex-col gap-4 p-4 bg-white rounded shadow">
@@ -128,14 +134,22 @@ export const PerpForm: React.FC<PerpFormProps> = ({
         type="submit"
         className={clsx(
           "px-4 py-2 rounded mt-2",
-          !isFormValid || !quote
+          submitDisabled
             ? "bg-white border border-gray-400 text-gray-400"
             : "bg-blue-500 text-white"
         )}
-        disabled={!isFormValid || !quote}
+        disabled={submitDisabled}
       >
-        Submit
+        {isQuoteFetching ? "Loading..." : "Submit"}
       </button>
+      {(quote?.errorMessage || !!quoteError) && (
+        <div className="text-red-500 mt-2">
+          Error:{" "}
+          {quote?.errorMessage ||
+            (quoteError as Error)?.message ||
+            "Unknown error"}
+        </div>
+      )}
     </form>
   );
 };
