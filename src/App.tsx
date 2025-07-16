@@ -39,9 +39,9 @@ const App: React.FC = () => {
         <header className="bg-blue-600 text-white p-4">
           <h1 className="text-2xl">Market Dashboard</h1>
         </header>
-        <main className="p-4">
+        <main className="p-2 sm:p-4 w-full max-w-xl mx-auto">
           <Card>
-            <div className="flex flex-row items-center justify-start gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-2 sm:gap-4">
               <ButtonWithLoader
                 disabled={isMarketsPopupOpen}
                 isLoading={isMarketStatsListLoading}
@@ -51,7 +51,7 @@ const App: React.FC = () => {
               </ButtonWithLoader>
 
               {marketStatsListError ? (
-                <span className="text-red-500">
+                <span className="text-red-500 text-sm ">
                   Error loading markets: {marketStatsListError.message}
                 </span>
               ) : (
