@@ -13,6 +13,7 @@ export interface Market {
   feeBps: number;
   enabled: boolean;
   pair: PairTokens;
+  maxLeverage: number;
 }
 
 export interface PairTokens {
@@ -45,9 +46,9 @@ export interface OpenPositionRequest {
 }
 
 export interface FunctionCallData {
-  to: string;
+  to: `0x${string}`;
   value: bigint;
-  data: string;
+  data: `0x${string}`;
 }
 
 export interface Position {
@@ -138,7 +139,6 @@ export interface MarketStatsList {
   tokenStats: MarketStats;
 }
 
-
 export interface MarketStats {
   address: string;
   symbol: string;
@@ -155,13 +155,11 @@ export interface MarketStats {
   oneDayChange: number;
 }
 
-
 export enum PayInType {
   NATIVE = "NATIVE",
   TOKEN = "TOKEN",
   VAULT = "VAULT",
 }
-
 
 export interface PerpQuoteRequestV2 {
   marketId: number;
