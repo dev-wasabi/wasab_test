@@ -18,6 +18,23 @@ After market selection, show a quoting interface where users can:
 - See the output amount they will receive
 - Adjust leverage using a slider
 
+### 3. Opening Positions
+Implement functionality to actually open positions:
+- Submit position orders with the configured parameters
+- Handle position opening by calling the `fetchOrderV2` endpoint and submitting the calldata inside the `PerpOrder`
+- Make sure to also approve the payment token to the `to` address from the function call data
+- Show confirmation dialogs before opening positions
+- Display success/error feedback after position submission
+- Validate inputs before allowing position opening
+
+### 4. Positions Table
+Display a table showing all user positions:
+- Fetch and display current open positions
+- Show position details (market, side, size, entry price, PnL, etc.)
+- Real-time updates of position values and PnL
+- Actions to close or modify existing positions
+- Responsive table design for mobile and desktop
+
 ## 🎨 Technical Stack
 
 - **React 18** with TypeScript

@@ -173,3 +173,18 @@ export interface PerpQuoteRequestV2 {
   payInType: PayInType; // use NATIVE
   address: string;
 }
+
+export interface PositionStatus {
+  position: Position;
+  market: Market;
+  netValue: bigint;
+  markPrice: number;
+  liquidationPrice: number;
+  interestPaid: bigint;
+  interestPaidInQuote: bigint;
+  apr: number;
+  pnl: bigint;
+  pnlWithFee: bigint;
+  fee: bigint;
+  hasError: boolean;
+}
