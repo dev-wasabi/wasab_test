@@ -18,7 +18,32 @@ After market selection, show a quoting interface where users can:
 - See the output amount they will receive
 - Adjust leverage using a slider
 
-### 3. Opening Positions
+### 3. Wallet Connection
+Implement wallet connectivity for user interactions:
+- Integrate wallet connection using Wallet Connector or similar libraries
+- Support popular wallets (MetaMask, WalletConnect, etc.)
+- Display connected wallet address and balance
+- Handle wallet connection/disconnection states
+- Show appropriate UI when wallet is not connected
+
+### 4. Token Approval Process
+Implement token approval functionality using wagmi/viem:
+- Read current token approval status for wasabi contracts
+- Request token approval when insufficient allowance
+- Use wagmi/viem hooks for reading and writing approval state
+- Display approval status and required actions to users
+- Handle approval transaction flows
+
+### 5. Transaction Pending States
+Implement comprehensive transaction state management:
+- Show loading notifications when approval transactions are submitted
+- Display pending states for trade transactions
+- Implement success/error notification system
+- Provide transaction hash links to block explorers
+- Handle transaction failures with clear error messages
+- Show progress indicators during multi-step processes (approval → trade)
+
+### 6. Opening Positions
 Implement functionality to actually open positions:
 - Submit position orders with the configured parameters
 - Handle position opening by calling the `fetchOrderV2` endpoint and submitting the calldata inside the `PerpOrder`
@@ -27,7 +52,7 @@ Implement functionality to actually open positions:
 - Display success/error feedback after position submission
 - Validate inputs before allowing position opening
 
-### 4. Positions Table
+### 7. Positions Table
 Display a table showing all user positions:
 - Fetch and display current open positions
 - Show position details (market, side, size, entry price, PnL, etc.)
@@ -42,6 +67,23 @@ Display a table showing all user positions:
 - **TanStack Query** for data fetching
 - **Webpack 5** for bundling
 - **PostCSS** for CSS processing
+
+## 📦 Required NPM Packages
+
+### Blockchain Interactions
+- **wagmi** - React hooks for Ethereum interactions
+- **viem** - TypeScript interface for Ethereum, required for wagmi
+
+### Wallet Connection
+- **Reown AppKit** (recommended) - Comprehensive wallet connection solution
+  - Documentation: [Reown AppKit Overview](https://docs.reown.com/overview)
+  - Supports 600+ wallets with features like email/social login, gas sponsorship, multi-chain support
+- Alternative wallet connection libraries are acceptable (WalletConnect, RainbowKit, etc.)
+
+### UI Libraries (Optional)
+- Any reasonable UI component libraries can be used alongside Tailwind CSS
+- Examples: Headless UI, Radix UI, Chakra UI, Material-UI, Ant Design
+- Choose based on project needs and design requirements
 
 ## 📁 Project Structure
 
