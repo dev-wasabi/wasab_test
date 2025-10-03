@@ -149,20 +149,51 @@ npm run build
 
 ## 📝 Expected Features
 
-### Markets Selection
-- Dropdown with fetched markets
-- Clear market information display (name, symbol, etc.)
-- Loading state while fetching markets
+### Wallet Integration
+- Connect/disconnect wallet functionality
+- Display connected wallet address and balance
+- Support for multiple wallet types (MetaMask, WalletConnect, etc.)
+- Wallet connection status indicators
+- Graceful handling of wallet switching and disconnection
 
-### Position Creation
+### Markets Selection
+- Dropdown with fetched markets using `fetchMarketStatsList`
+- Clear market information display (name, symbol, price, etc.)
+- Loading state while fetching markets
+- Error handling for failed market data requests
+
+### Position Configuration
 - Toggle between Long/Short positions
-- Input field for quote token amount
+- Input field for quote token amount with validation
 - Real-time output calculation display
-- Leverage slider (e.g., 1x to 10x)
+- Leverage slider (e.g., 1x to 10x (or whatever the market max leverage is)) with clear indicators
 - Clear visual feedback for position type and amounts
+- Input validation and error messages
+
+### Token Approval Management
+- Check current token allowance using wagmi/viem
+- Request token approval when insufficient
+- Display approval status and progress
+- Handle approval transaction states
+- Clear indication of required vs. completed approvals
+
+### Transaction Flow
+- Multi-step transaction process (approval → trade)
+- Loading states for pending transactions
+- Success/error notifications with transaction hashes
+- Progress indicators for multi-step operations
+- Block explorer links for completed transactions
+- Retry mechanisms for failed transactions
+
+### Position Management
+- Real-time positions table with current data
+- Position details (market, side, size, entry price, PnL)
+- Live updates of position values and unrealized PnL
 
 ### User Experience
 - Responsive design for different screen sizes
-- Intuitive form validation
-- Clear error handling
-- Smooth transitions between states 
+- Intuitive form validation with clear error messages
+- Comprehensive error handling for all failure scenarios
+- Smooth transitions between application states
+- Loading skeletons and progress indicators
+- Accessible UI components and keyboard navigation 
